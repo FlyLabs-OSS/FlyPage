@@ -1,0 +1,6 @@
+{
+  "name": "FlyPage",
+  "description": "Sleek and interactive documentation portal framework and markdown rendering engine.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
