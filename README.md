@@ -1,29 +1,20 @@
-# Getting Started
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+</div>
 
-Welcome to **FlyPage**. FlyPage is designed to help you get up and running with a beautiful, dark-themed documentation in minutes.
+# Run and deploy your AI Studio app
 
-## Prerequisites
+This contains everything you need to run your app locally.
 
-Before you begin, ensure you have the following installed:
-- Node.js (v18 or higher)
-- npm or yarn
+View your app in AI Studio: https://ai.studio/apps/8d402244-3d5d-42b9-b80f-f089571d7345
 
-## Installation
+## Run Locally
 
-To start using this template, clone the repository and install dependencies:
+**Prerequisites:**  Node.js
 
-```bash
-git clone https://github.com/FlyLabs-Dev/FlyPage.git
-cd FlyPage
-npm install
-```
 
-## Quick Start
-
-Run the development server to see your docs in action:
-
-```bash
-npm run dev
-```
-
-Your documentation will be available at `http://localhost:5173`
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

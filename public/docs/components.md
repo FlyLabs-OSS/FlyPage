@@ -50,7 +50,7 @@ Structure your roadmap, setup instructions, or build steps with interactive chec
 
 ---
 
-## 5. Inline Typography & Accents
+## Inline Typography & Accents
 
 Format your text with diverse inline weights to clarify hierarchies and critical terms:
 - Make text stand out with **strong emphasis** or *subtle italic accents*
