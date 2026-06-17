@@ -9,6 +9,7 @@ import {
   Command, Clock
 } from 'lucide-react';
 import { docsMetadata } from './data/docs';
+import { config } from './config';
 import './App.css';
 
 const getLanguageIcon = (lang: string) => {
@@ -510,6 +511,40 @@ const App: React.FC = () => {
       });
   }, [activeMeta]);
 
+  // Dynamic branding initialization (Document Title, Favicon, Accent Color)
+  useEffect(() => {
+    if (config.brandAccent) {
+      document.documentElement.style.setProperty('--accent-color', config.brandAccent);
+    }
+
+    if (config.logoUrl) {
+      let fvUrl = config.logoUrl;
+      const emojiRegex = /\p{Emoji}/u;
+      if (config.logoUrl.length <= 4 && emojiRegex.test(config.logoUrl)) {
+        fvUrl = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%220.9em%22 font-size=%2290%22>${config.logoUrl}</text></svg>`;
+      }
+      
+      let link: HTMLLinkElement | null = document.querySelector("link[rel~='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.getElementsByTagName('head')[0].appendChild(link);
+      }
+      link.href = fvUrl;
+    }
+  }, []);
+
+  // Sync document title with current page and site configuration
+  useEffect(() => {
+    if (config.docsTitle) {
+      if (activeMeta && activeMeta.title) {
+        document.title = `${activeMeta.title} | ${config.docsTitle}`;
+      } else {
+        document.title = config.docsTitle;
+      }
+    }
+  }, [activeMeta]);
+
   // Handle on-the-fly Markdown document translating
   useEffect(() => {
     let active = true;
@@ -775,7 +810,26 @@ const App: React.FC = () => {
     <div className="app-container">
       <header className="header">
         <div className="header-left">
-          <a href="/" className="logo">FlyPage</a>
+          <a href="/" className="logo" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+            {config.logoUrl && (
+              (() => {
+                const emojiRegex = /\p{Emoji}/u;
+                const isEmoji = config.logoUrl.length <= 4 && emojiRegex.test(config.logoUrl);
+                if (isEmoji) {
+                  return <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>{config.logoUrl}</span>;
+                }
+                return (
+                  <img 
+                    src={config.logoUrl} 
+                    alt={`${config.docsTitle} logo`} 
+                    style={{ height: '1.5rem', width: 'auto', objectFit: 'contain' }}
+                    referrerPolicy="no-referrer"
+                  />
+                );
+              })()
+            )}
+            <span>{config.docsTitle}</span>
+          </a>
           
           {/* Elegant Dynamic Language Selector */}
           <div className="lang-selector-container" ref={langDropdownRef}>
@@ -809,7 +863,7 @@ const App: React.FC = () => {
         </div>
         
         <div className="header-right" style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
-          Made with <a href="https://github.com/FlyLabs-Dev/FlyPage" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s' }} className="hover:text-white">FlyPage</a>
+          Made with <a href={config.gitHubRepo} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s' }} className="hover:text-white">{config.docsTitle}</a>
         </div>
       </header>
 
@@ -877,10 +931,22 @@ const App: React.FC = () => {
                         <Copy size={14} />
                         <span>{t('copyPage')}</span>
                       </button>
-                      <button className="dropdown-item" onClick={() => { window.alert('Edit feature coming soon! Edit the .md file in public/docs/'); setIsDropdownOpen(false); }}>
-                        <Edit3 size={14} />
-                        <span>{t('editPage')}</span>
-                      </button>
+                      {config.enableEditPage && (
+                        <button 
+                          className="dropdown-item" 
+                          onClick={() => { 
+                            const repo = config.gitHubRepo.replace(/\/$/, '');
+                            const branch = config.branch || 'main';
+                            // activeMeta.path starts with /docs/getting-started.md
+                            const editUrl = `${repo}/edit/${branch}/public${activeMeta.path}`;
+                            window.open(editUrl, '_blank'); 
+                            setIsDropdownOpen(false); 
+                          }}
+                        >
+                          <Edit3 size={14} />
+                          <span>{t('editPage')}</span>
+                        </button>
+                      )}
                       <button className="dropdown-item" onClick={() => { window.open(activeMeta.path, '_blank'); setIsDropdownOpen(false); }}>
                         <FileCode size={14} />
                         <span>{t('viewMarkdown')}</span>
@@ -991,7 +1057,7 @@ const App: React.FC = () => {
             <div className="command-palette-content">
               {searchQuery.trim() === '' ? (
                 <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                  <div style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>🔍 {t('searchDocs')}</div>
+                  <div style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{t('searchDocs')}</div>
                   <div style={{ fontSize: '0.8125rem', opacity: 0.7 }}>
                     {t('typeToSearch')}
                   </div>
@@ -1037,7 +1103,6 @@ const App: React.FC = () => {
                               </>
                             )}
                           </div>
-                          <span style={{ fontSize: '0.625rem', opacity: 0.6 }}>{t('snippetMatch')}</span>
                         </div>
                         <div 
                           style={{ 

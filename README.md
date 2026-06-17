@@ -1,6 +1,6 @@
 # Getting Started
 
-Welcome to **FlyPage**. FlyPage is designed to help you get up and running with a beautiful, dark-themed documentation in minutes.
+Welcome to **FlyPage**. FlyPage is designed to help you get up and running with a beautiful documentation in minutes.
 
 ## Prerequisites
 
@@ -26,4 +26,4 @@ Run the development server to see your docs in action:
 npm run dev
 ```
 
-Your documentation will be available at `http://localhost:5173`
+Your documentation will be available at `http://localhost:3000`

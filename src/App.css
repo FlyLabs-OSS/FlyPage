@@ -237,6 +237,16 @@ body {
   opacity: 0.85;
   font-weight: 400;
 }
+.markdown-body a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.15s ease;
+}
+.markdown-body a:hover {
+  text-decoration: underline;
+  opacity: 0.95;
+}
 .markdown-body code { 
   background-color: var(--bg-tertiary); 
   padding: 0.2rem 0.4rem; 
