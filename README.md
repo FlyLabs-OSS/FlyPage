@@ -1,3 +1,6 @@
+> [!NOTE]
+> We do not accept Pull Requests, please open an [Issue](https://github.com/FlyLabs-Dev/FlyPage/issues) instead.
+
 # Getting Started
 
 Welcome to **FlyPage**. FlyPage is designed to help you get up and running with a beautiful documentation in minutes.
