@@ -1,5 +1,5 @@
 > [!NOTE]
-> We do not accept Pull Requests, please open an [Issue](https://github.com/FlyLabs-Dev/FlyPage/issues) instead.
+> We do not accept Pull Requests, please open an [Issue](https://github.com/FlyLabs-OSS/FlyPage/issues) instead.
 
 # Getting Started
 
@@ -16,7 +16,7 @@ Before you begin, ensure you have the following installed:
 To start using this template, clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/FlyLabs-Dev/FlyPage.git
+git clone https://github.com/FlyLabs-OSS/FlyPage.git
 cd FlyPage
 npm install
 ```
