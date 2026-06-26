@@ -9,7 +9,6 @@ Before you begin, ensure you have the following installed:
 - npm or yarn
 
 ## Installation
-FlyLabs-OSS
 To start using this template, clone the repository and install dependencies:
 
 ```bash
