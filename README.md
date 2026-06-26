@@ -1,6 +1,3 @@
-> [!NOTE]
-> We do not accept Pull Requests, please open an [Issue](https://github.com/FlyLabs-OSS/FlyPage/issues) instead.
-
 # Getting Started
 
 Welcome to **FlyPage**. FlyPage is designed to help you get up and running with a beautiful documentation in minutes.
@@ -12,11 +9,11 @@ Before you begin, ensure you have the following installed:
 - npm or yarn
 
 ## Installation
-
+FlyLabs-OSS
 To start using this template, clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/FlyLabs-OSS/FlyPage.git
+git clone https://github.com/FlyLabs-FlyLabs-OSS/FlyPage.git
 cd FlyPage
 npm install
 ```

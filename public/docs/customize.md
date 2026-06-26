@@ -58,6 +58,31 @@ Each documentation item in `/src/data/docs.ts` can use a custom icon. The site i
 
 To swap an icon, simply assign its String literal name to the `icon` property of your document entry.
 
+## Organizing with Categories
+
+You can group your sidebar links into logical categories by adding a `category` string to your document items in `/src/data/docs.ts`:
+
+```typescript
+export const docsMetadata: DocItem[] = [
+  {
+    id: 'getting-started',
+    title: 'Getting Started',
+    path: '/docs/getting-started.md',
+    icon: 'Book',
+    category: 'Introduction'
+  },
+  {
+    id: 'adding-pages',
+    title: 'Adding Pages',
+    path: '/docs/adding-pages.md',
+    icon: 'FileText',
+    category: 'Guides'
+  }
+];
+```
+
+FlyPage will automatically group items by these labels and render stylish headers in the sidebar to keep your navigation organized as your documentation grows.
+
 ## Typography Pairings
 
 We use clean, legible typographic pairings to maximize readability. If you want to configure different web fonts, import them via `@import url(...)` at the top of `/src/index.css` and map them to the system font variables:

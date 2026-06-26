@@ -6,7 +6,7 @@ import {
   Info, AlertTriangle, AlertCircle, CheckCircle2,
   Book, Palette, FileText, Component, Zap,
   ChevronLeft, ChevronRight, ChevronDown, Edit3, Eye, MoreHorizontal,
-  Command, Clock
+  Command, Clock, Menu, X, List
 } from 'lucide-react';
 import { docsMetadata } from './data/docs';
 import { config } from './config';
@@ -484,6 +484,7 @@ const App: React.FC = () => {
   // Search Page Content State
   const [pagesContent, setPagesContent] = useState<Record<string, string>>({});
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedSearchIndex, setSelectedSearchIndex] = useState(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchModalRef = useRef<HTMLDivElement>(null);
@@ -606,6 +607,18 @@ const App: React.FC = () => {
       return parentTitle.toLowerCase().includes(searchQuery.toLowerCase());
     }),
   [searchQuery, translatedTitles]);
+
+  const groupedDocs = useMemo(() => {
+    const groups: Record<string, typeof docsMetadata> = {};
+    filteredDocs.forEach(doc => {
+      const category = doc.category || 'Other';
+      if (!groups[category]) {
+        groups[category] = [];
+      }
+      groups[category].push(doc);
+    });
+    return groups;
+  }, [filteredDocs]);
 
   const toc = useMemo(() => {
     const sourceText = displayedContent || content;
@@ -808,6 +821,12 @@ const App: React.FC = () => {
 
   return (
     <div className="app-container">
+      {isMobileMenuOpen && (
+        <div 
+          className="sidebar-overlay" 
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
       <header className="header">
         <div className="header-left">
           <a href="/" className="logo" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
@@ -862,13 +881,50 @@ const App: React.FC = () => {
           </div>
         </div>
         
-        <div className="header-right" style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
-          Made with <a href={config.gitHubRepo} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s' }} className="hover:text-white">{config.docsTitle}</a>
+        <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div className="header-attribution" style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
+            Made with <a href={config.gitHubRepo} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s' }} className="hover:text-white">{config.docsTitle}</a>
+          </div>
+          <button 
+            className="mobile-menu-toggle"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
         </div>
       </header>
 
       <main className="main-layout">
-        <aside className="sidebar">
+        <aside className={`sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+          <div className="sidebar-header">
+            <div className="logo" style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+              {config.logoUrl && (
+                (() => {
+                  const emojiRegex = /\p{Emoji}/u;
+                  const isEmoji = config.logoUrl.length <= 4 && emojiRegex.test(config.logoUrl);
+                  if (isEmoji) {
+                    return <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>{config.logoUrl}</span>;
+                  }
+                  return (
+                    <img 
+                      src={config.logoUrl} 
+                      alt={`${config.docsTitle} logo`} 
+                      style={{ height: '1.5rem', width: 'auto', objectFit: 'contain' }}
+                      referrerPolicy="no-referrer"
+                    />
+                  );
+                })()
+              )}
+              <span>{config.docsTitle}</span>
+            </div>
+            <button 
+              className="sidebar-close-btn"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <X size={20} />
+            </button>
+          </div>
+
           {/* Quick full-text page content search input */}
           <div className="sidebar-search-container">
             <Search className="search-icon" size={16} />
@@ -887,23 +943,31 @@ const App: React.FC = () => {
           </div>
           
           <nav>
-            <ul className="sidebar-nav">
-              {filteredDocs.map(doc => (
-                <li key={doc.id} className="nav-item">
-                  <a 
-                    href={`#${doc.id}`}
-                    className={`nav-link ${activeTab === doc.id ? 'active' : ''}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveTab(doc.id);
-                    }}
-                  >
-                    {getTabIcon(doc.icon)}
-                    <span>{translatedTitles[doc.id] || doc.title}</span>
-                  </a>
-                </li>
+            <div className="sidebar-nav">
+              {Object.entries(groupedDocs).map(([category, docs]) => (
+                <div key={category} className="nav-group">
+                  <h3 className="nav-category-header">{category}</h3>
+                  <ul className="nav-group-list">
+                    {docs.map(doc => (
+                      <li key={doc.id} className="nav-item">
+                        <a 
+                          href={`#${doc.id}`}
+                          className={`nav-link ${activeTab === doc.id ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setActiveTab(doc.id);
+                            setIsMobileMenuOpen(false);
+                          }}
+                        >
+                          {getTabIcon(doc.icon)}
+                          <span>{translatedTitles[doc.id] || doc.title}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
+            </div>
           </nav>
         </aside>
 
@@ -1012,7 +1076,10 @@ const App: React.FC = () => {
         </section>
 
         <aside className="toc-area">
-          <div className="toc-title">{t('onThisPage')}</div>
+          <div className="toc-title">
+            <List size={16} />
+            <span>{t('onThisPage')}</span>
+          </div>
           <ul className="toc-list">
             {toc.map((item, index) => (
               <li 
